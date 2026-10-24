@@ -30,15 +30,28 @@ function App() {
   const [issueForm, setIssueForm] = useState({ bookId:'', memberId:'', dueDate:defaultDue });
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const loadData = useCallback(async () => {
-    setLoading(true); setError('');
+  const loadData = useCallback(async (silent = false) => {
+    if (!silent) { setLoading(true); setError(''); }
     try {
       const [b,m,t] = await Promise.all([api.books(), api.members(), api.transactions()]);
       setBooks(b); setMembers(m); setTransactions(t);
-    } catch (e) { setError(`${e.message}. Check that the backend is running and MongoDB is configured.`); }
-    finally { setLoading(false); }
+    } catch (e) { if (!silent) setError(`${e.message}. Check that the backend is running and MongoDB is configured.`); }
+    finally { if (!silent) setLoading(false); }
   }, []);
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Auto-refresh so changes made outside the UI (e.g. by Claude via MCP) show up without a manual reload
+  useEffect(() => {
+    const tick = () => { if (!document.hidden && !modal) loadData(true); };
+    const id = window.setInterval(tick, 10000);
+    window.addEventListener('focus', tick);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener('focus', tick);
+      document.removeEventListener('visibilitychange', tick);
+    };
+  }, [loadData, modal]);
 
   const active = transactions.filter(t => t.status === 'issued');
   const overdue = active.filter(t => new Date(t.dueDate) < new Date());
