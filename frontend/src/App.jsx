@@ -114,7 +114,7 @@ function App() {
     </aside>
     {sidebarOpen && <div className="scrim" onClick={() => setSidebarOpen(false)} />}
     <main className="main-area">
-      <header className="topbar"><div className="topbar-left"><button className="icon-button mobile-menu" onClick={() => setSidebarOpen(true)}><Menu size={20}/></button><div><div className="breadcrumb">Library / <span>{title}</span></div><h1>{section === 'dashboard' ? 'Good morning, Librarian' : title}</h1></div></div><div className="topbar-actions"><div className="today-pill"><CalendarDays size={16}/>{today.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</div><button className="icon-button notification" title="Notifications"><Bell size={18}/><i/></button><div className="top-avatar">LA</div></div></header>
+      <header className="topbar"><div className="topbar-left"><button className="icon-button mobile-menu" onClick={() => setSidebarOpen(true)}><Menu size={20}/></button><div><div className="breadcrumb">Library / <span>{title}</span></div><h1>{section === 'dashboard' ? 'Welcome back, Librarian' : title}</h1></div></div><div className="topbar-actions"><div className="today-pill"><CalendarDays size={16}/>{today.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</div><button className="icon-button notification" title="Notifications"><Bell size={18}/><i/></button><div className="top-avatar">LA</div></div></header>
       <div className="content">
         {error && <div className="alert error-alert"><AlertCircle size={18}/><span>{error}</span><button onClick={() => setError('')}><X size={16}/></button></div>}
         {notice && <div className="alert success-alert"><Check size={18}/>{notice}</div>}
